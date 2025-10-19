@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="forjava.AppController">
+   <left>
+      <VBox alignment="TOP_CENTER" prefWidth="60.0" spacing="15.0" style="-fx-background-color: #e7f0f8;">
+         <padding>
+            <Insets top="15.0" />
+         </padding>
+         <children>
+            <Button mnemonicParsing="false">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/home.png" />
+                     </image>
+                     <effect>
+                        <Blend />
+                     </effect>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button mnemonicParsing="false">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/brand_family.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <VBox spacing="10.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <TitledPane animated="false" text="Ethernet connect menu">
+                     <content>
+                        <HBox spacing="5.0">
+                           <children>
+                              <Button fx:id="connectButton" mnemonicParsing="false" onAction="#handleConnect" text="Connect" />
+                              <Button fx:id="disconnectButton" mnemonicParsing="false" onAction="#handleDisconnect" text="Disconnect" />
+                           </children>
+                        </HBox>
+                     </content>
+                  </TitledPane>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <GridPane hgap="5.0" vgap="5.0">
+                     <children>
+                        <Label text="TCP/IP" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label text="Setup Port" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Label text="Touch Port" GridPane.rowIndex="2" />
+                        <TextField fx:id="tcpIpField" onAction="#handleTcpIpEnter" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <TextField fx:id="setupPortField" onAction="#handleSetupPortEnter" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="touchPortField" onAction="#handleTouchPortEnter" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button fx:id="setupPortButton" mnemonicParsing="false" onAction="#handleSetupPort" text="Setup Port" GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="2" />
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                  </GridPane>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Button fx:id="startButton" mnemonicParsing="false" onAction="#handleStart" text="START" />
+                  <Button fx:id="stopButton" mnemonicParsing="false" onAction="#handleStop" text="STOP" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button fx:id="addTcButton" mnemonicParsing="false" onAction="#handleAddTc" text="ADD TC" />
+                  <Button fx:id="delTcButton" mnemonicParsing="false" onAction="#handleDelTc" text="DEL TC" />
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handleSave" text="SAVE" />
+                  <Button fx:id="loadButton" mnemonicParsing="false" onAction="#handleLoad" text="LOAD" />
+               </children>
+            </HBox>
+            <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="colNum" prefWidth="50.0" text=" " />
+                  <TableColumn fx:id="colTitle" prefWidth="150.0" text="TITLE" />
+                  <TableColumn fx:id="colContent" prefWidth="400.0" text="CONTENT" />
+                  <TableColumn fx:id="colResult" prefWidth="150.0" text="RESULT (FAIL/TOTAL)" />
+               </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

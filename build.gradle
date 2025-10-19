@@ -1,0 +1,35 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+repositories { mavenCentral() }
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+application {
+    mainClass = "forjava.App"
+}
+
+javafx {
+    version = "25"
+    modules = [ "javafx.controls", "javafx.fxml" ]
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
+
+dependencies {
+    implementation 'org.xerial:sqlite-jdbc:3.43.0.0'
+}
+
+run {
+    jvmArgs = [
+        '--enable-native-access=javafx.graphics'
+    ]
+}

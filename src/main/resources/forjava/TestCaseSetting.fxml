@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="forjava.TestCaseSettingController">
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <GridPane prefHeight="400.0" prefWidth="600.0">
+            <columnConstraints>
+               <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="0.0" prefWidth="0.0" />
+               <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="0.0" prefWidth="0.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints maxHeight="72.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="72.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="1.7976931348623157E308" valignment="CENTER" />
+               <RowConstraints maxHeight="344.0" minHeight="30.0" prefHeight="327.0" valignment="TOP" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="344.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="118.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+               <children>
+                  <Label alignment="CENTER" text="MEASUREMENT">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label text="SETUP" GridPane.columnIndex="2" />
+                  <Label text="TEST MODE" GridPane.columnIndex="4" />
+                  <Separator prefWidth="200.0" GridPane.columnSpan="5" GridPane.rowIndex="1" />
+                  <Separator prefWidth="200.0" GridPane.columnSpan="5" GridPane.rowIndex="4" />
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnSpan="5" GridPane.rowIndex="5">
+                     <children>
+                        <Button fx:id="applyButton" mnemonicParsing="false" onAction="#handleApply" text="Apply" />
+                        <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
+                     </children>
+                  </HBox>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowSpan="4" />
+                  <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="3" GridPane.rowSpan="4" />
+                  <TitledPane alignment="TOP_LEFT" animated="false" prefWidth="90.0" text="Test Mode" GridPane.columnIndex="4" GridPane.rowIndex="3">
+                  <content>
+                     <AnchorPane cache="true" minHeight="0.0" minWidth="0.0" prefWidth="185.0">
+                           <children>
+                              <VBox layoutX="5.0">
+                                 <children>
+                                    <CheckBox fx:id="initializeCheckbox" mnemonicParsing="false" text="Initialize">
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+                                       <padding>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </padding>
+                                    </CheckBox>
+                                    <CheckBox fx:id="balanceCheckbox" mnemonicParsing="false" text="Balance">
+                                       <padding>
+                                          <Insets bottom="5.0" />
+                                       </padding>
+                                    </CheckBox>
+                                    <CheckBox fx:id="unbalanceCheckbox" mnemonicParsing="false" text="Unbalance">
+                                       <padding>
+                                          <Insets bottom="5.0" />
+                                       </padding>
+                                    </CheckBox>
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                              </VBox>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </AnchorPane>
+                  </content>
+                  </TitledPane>
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
