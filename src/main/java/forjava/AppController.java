@@ -260,17 +260,18 @@ public class AppController implements Initializable {
      * 이 메소드는 백그라운드 스레드에서 호출되어야 합니다.
      */
     private String executePythonScript(String content) throws IOException, InterruptedException, URISyntaxException {
-        // 1. 현재 실행 중인 코드(JAR 파일)의 위치를 가져옵니다.
-        CodeSource codeSource = App.class.getProtectionDomain().getCodeSource();
-        File jarFile = new File(codeSource.getLocation().toURI().getPath());
         
-        // 2. JAR 파일이 있는 폴더의 부모 폴더, 즉 애플리케이션 설치 루트를 찾습니다.
-        File appRoot = jarFile.getParentFile();
+        // CodeSource codeSource = App.class.getProtectionDomain().getCodeSource();
+        // URL location = codeSource.getLocation();
+        File appRoot;
 
-        // 3. 설치 루트를 기준으로 Python 실행 파일과 스크립트의 정확한 경로를 동적으로 만듭니다.
+        appRoot = new File(System.getProperty("user.dir"));
+
         String pythonExecutablePath = new File(appRoot, "python_env/python.exe").getAbsolutePath();
         String scriptPath = new File(appRoot, "python_scripts/main.py").getAbsolutePath();
 
+
+        System.out.println("[PY] App Root: " + appRoot.getAbsolutePath());
         System.out.println("[PY] Executing: " + pythonExecutablePath + " " + scriptPath + " " + content);
 
         ProcessBuilder processBuilder = new ProcessBuilder(
