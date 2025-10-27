@@ -26,6 +26,7 @@ tasks.withType(JavaCompile).configureEach {
 
 dependencies {
     implementation 'org.xerial:sqlite-jdbc:3.43.0.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 }
 
 run {

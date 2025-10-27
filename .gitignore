@@ -7,4 +7,5 @@ build
 python_env
 python_scripts
 target
-
+gradle.properties
+launch.json
