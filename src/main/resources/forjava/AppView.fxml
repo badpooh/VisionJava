@@ -19,19 +19,16 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
-   fx:controller="forjava.AppController">
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="forjava.AppController">
    <left>
-      <VBox alignment="TOP_CENTER" prefWidth="60.0" spacing="15.0"
-         style="-fx-background-color: #e7f0f8;">
+      <VBox alignment="TOP_CENTER" prefWidth="60.0" spacing="15.0" style="-fx-background-color: #e7f0f8;">
          <padding>
             <Insets top="15.0" />
          </padding>
          <children>
             <Button mnemonicParsing="false">
                <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="20.0" pickOnBounds="true"
-                     preserveRatio="true">
+                  <ImageView fitHeight="30.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/home.png" />
                      </image>
@@ -43,8 +40,7 @@
             </Button>
             <Button mnemonicParsing="false">
                <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="20.0" pickOnBounds="true"
-                     preserveRatio="true">
+                  <ImageView fitHeight="30.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/brand_family.png" />
                      </image>
@@ -66,10 +62,8 @@
                      <content>
                         <HBox spacing="5.0">
                            <children>
-                              <Button fx:id="connectButton" mnemonicParsing="false"
-                                 onAction="#handleConnect" text="Connect" />
-                              <Button fx:id="disconnectButton" mnemonicParsing="false"
-                                 onAction="#handleDisconnect" text="Disconnect" />
+                              <Button fx:id="connectButton" mnemonicParsing="false" onAction="#handleConnect" text="Connect" />
+                              <Button fx:id="disconnectButton" mnemonicParsing="false" onAction="#handleDisconnect" text="Disconnect" />
                            </children>
                         </HBox>
                      </content>
@@ -80,18 +74,11 @@
                         <Label text="TCP/IP" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <Label text="Setup Port" GridPane.rowIndex="1" />
                         <Label text="Touch Port" GridPane.rowIndex="3" />
-                        <TextField fx:id="tcpIpField" onAction="#handleTcpIpEnter"
-                           GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <TextField fx:id="setupPortField" onAction="#handleSetupPortEnter"
-                           GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="touchPortField" onAction="#handleTouchPortEnter"
-                           GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Button fx:id="tcpApplyButton" layoutX="241.0" layoutY="23.0"
-                           mnemonicParsing="false" onAction="#handleSetupPort" text="Apply"
-                           GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <Button fx:id="tcpCancelButton" layoutX="241.0" layoutY="10.0"
-                           mnemonicParsing="false" onAction="#handleSetupPort" text="Cancel"
-                           GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <TextField fx:id="tcpIpField" onAction="#handleTcpIpEnter" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <TextField fx:id="setupPortField" onAction="#handleSetupPortEnter" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="touchPortField" onAction="#handleTouchPortEnter" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Button fx:id="tcpApplyButton" layoutX="241.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleSetupPort" text="Apply" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Button fx:id="tcpCancelButton" layoutX="241.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleSetupPort" text="Cancel" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                      </children>
                      <columnConstraints>
                         <ColumnConstraints />
@@ -110,21 +97,14 @@
             <Separator prefWidth="200.0" />
             <HBox alignment="CENTER_LEFT">
                <children>
-                  <Button fx:id="startButton" mnemonicParsing="false" onAction="#handleStart"
-                     text="START" />
-                  <Button fx:id="stopButton" mnemonicParsing="false" onAction="#handleStop"
-                     text="STOP" />
-                  <Button fx:id="serverStartButton" mnemonicParsing="false" onAction="#serverStart"
-                     text="SERVER START" />
+                  <Button fx:id="startButton" mnemonicParsing="false" onAction="#handleStart" text="START" />
+                  <Button fx:id="stopButton" mnemonicParsing="false" onAction="#handleStop" text="STOP" />
+                  <Button fx:id="serverStartButton" mnemonicParsing="false" onAction="#serverStart" text="SERVER START" />
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button fx:id="addTcButton" mnemonicParsing="false" onAction="#handleAddTc"
-                     text="ADD TC" />
-                  <Button fx:id="delTcButton" mnemonicParsing="false" onAction="#handleDelTc"
-                     text="DEL TC" />
-                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handleSave"
-                     text="SAVE" />
-                  <Button fx:id="loadButton" mnemonicParsing="false" onAction="#handleLoad"
-                     text="LOAD" />
+                  <Button fx:id="addTcButton" mnemonicParsing="false" onAction="#handleAddTc" text="ADD TC" />
+                  <Button fx:id="delTcButton" mnemonicParsing="false" onAction="#handleDelTc" text="DEL TC" />
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handleSave" text="SAVE" />
+                  <Button fx:id="loadButton" mnemonicParsing="false" onAction="#handleLoad" text="LOAD" />
                </children>
             </HBox>
             <TableView fx:id="tableView" VBox.vgrow="ALWAYS">

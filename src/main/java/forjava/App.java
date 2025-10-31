@@ -37,11 +37,9 @@ public class App extends Application {
         stage.setOnCloseRequest(ignored -> {
             if (controller != null)
                 controller.stopServerOnExit();
-            // UI도 확실히 종료
             Platform.exit();
         });
 
-        // 창 숨김(Alt+F4 외 경우)에도 방지
         stage.setOnHidden(e -> {
             if (controller != null)
                 controller.stopServerOnExit();
@@ -52,7 +50,6 @@ public class App extends Application {
 
     @Override
     public void stop() {
-        // Application lifecycle 상 JVM이 정상 종료될 때 호출
         if (controller != null)
             controller.stopServerOnExit();
     }
@@ -60,5 +57,4 @@ public class App extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    // public static void main(String[] args) { launch(args); }
 }

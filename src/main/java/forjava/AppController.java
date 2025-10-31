@@ -3,13 +3,11 @@ package forjava;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.security.CodeSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,18 +72,18 @@ public class AppController implements Initializable {
     private Button serverStartButton;
 
     private final DatabaseManager dbManager = new DatabaseManager();
-    private static final String KEY_TCP_IP = "LAST_TCP_IP";
-    private static final String KEY_SETUP_PORT = "LAST_SETUP_PORT";
-    private static final String KEY_TOUCH_PORT = "LAST_TOUCH_PORT";
+    // private static final String KEY_TCP_IP = "LAST_TCP_IP";
+    // private static final String KEY_SETUP_PORT = "LAST_SETUP_PORT";
+    // private static final String KEY_TOUCH_PORT = "LAST_TOUCH_PORT";
     private ObservableList<TestCase> testCaseList = FXCollections.observableArrayList();
 
     private Process pythonServerProcess;
-    private Task<Void> testRunnerTask; // 현재 실행 중인 테스트 작업을 저장할 변수
+    private Task<Void> testRunnerTask;
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
             .build();
-    private final ObjectMapper objectMapper = new ObjectMapper(); // Jackson ObjectMapper
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -96,17 +94,17 @@ public class AppController implements Initializable {
 
     // --- (기존의 다른 메소드들은 여기에 그대로 유지됩니다) ---
     private void loadLastSettings() {
-        String lastIp = dbManager.loadSetting(KEY_TCP_IP);
+        String lastIp = dbManager.loadSetting(Config.KEY_TCP_IP);
         if (lastIp != null) {
             tcpIpField.setText(lastIp);
         }
 
-        String lastSetupPort = dbManager.loadSetting(KEY_SETUP_PORT);
+        String lastSetupPort = dbManager.loadSetting(Config.KEY_SETUP_PORT);
         if (lastSetupPort != null) {
             setupPortField.setText(lastSetupPort);
         }
 
-        String lastTouchPort = dbManager.loadSetting(KEY_TOUCH_PORT);
+        String lastTouchPort = dbManager.loadSetting(Config.KEY_TOUCH_PORT);
         if (lastTouchPort != null) {
             touchPortField.setText(lastTouchPort);
         }
@@ -116,7 +114,7 @@ public class AppController implements Initializable {
     private void handleTcpIpEnter() {
         String ip = tcpIpField.getText().trim();
         if (!ip.isEmpty()) {
-            dbManager.saveOrUpdateSetting(KEY_TCP_IP, ip);
+            dbManager.saveOrUpdateSetting(Config.KEY_TCP_IP, ip);
             System.out.println("Saved TCP/IP: " + ip);
         } else {
             System.out.println("TCP/IP field is empty");
@@ -127,7 +125,7 @@ public class AppController implements Initializable {
     private void handleSetupPortEnter() {
         String setupPort = setupPortField.getText().trim();
         if (!setupPort.isEmpty()) {
-            dbManager.saveOrUpdateSetting(KEY_SETUP_PORT, setupPort);
+            dbManager.saveOrUpdateSetting(Config.KEY_SETUP_PORT, setupPort);
             System.out.println("Saved Setup Port: " + setupPort);
         } else {
             System.out.println("Setup Port field is empty");
@@ -138,7 +136,7 @@ public class AppController implements Initializable {
     private void handleTouchPortEnter() {
         String touchPort = touchPortField.getText().trim();
         if (!touchPort.isEmpty()) {
-            dbManager.saveOrUpdateSetting(KEY_TOUCH_PORT, touchPort);
+            dbManager.saveOrUpdateSetting(Config.KEY_TOUCH_PORT, touchPort);
             System.out.println("Saved Touch Port: " + touchPort);
         } else {
             System.out.println("Touch Port field is empty");
@@ -154,7 +152,7 @@ public class AppController implements Initializable {
     private void handleAddTc() {
         int newNum = testCaseList.size() + 1;
 
-        TestCase newTestCase = new TestCase(newNum, "New Title", "Options not set", "0/0");
+        TestCase newTestCase = new TestCase(newNum, "New Title", "Options not set", "");
         testCaseList.add(newTestCase);
 
         System.out.println("ADD TC button clicked. New row added.");
@@ -176,10 +174,9 @@ public class AppController implements Initializable {
     private void handleConnect() {
         System.out.println("Connect button clicked. Attempting to connect Modbus via FastAPI.");
 
-        // 1. 데이터베이스에서 최신 IP/Port 정보 읽기
-        String ip = dbManager.loadSetting(KEY_TCP_IP);
-        String setupPortStr = dbManager.loadSetting(KEY_SETUP_PORT);
-        String touchPortStr = dbManager.loadSetting(KEY_TOUCH_PORT);
+        String ip = dbManager.loadSetting(Config.KEY_TCP_IP);
+        String setupPortStr = dbManager.loadSetting(Config.KEY_SETUP_PORT);
+        String touchPortStr = dbManager.loadSetting(Config.KEY_TOUCH_PORT);
 
         if (ip == null || setupPortStr == null || touchPortStr == null) {
             showAlert(AlertType.ERROR, "연결 오류", "IP 주소 또는 포트 번호가 DB에 설정되지 않았습니다.");
@@ -187,19 +184,15 @@ public class AppController implements Initializable {
         }
 
         try {
-            // 포트 번호를 정수로 변환
             int setupPort = Integer.parseInt(setupPortStr);
             int touchPort = Integer.parseInt(touchPortStr);
 
-            // 버튼 임시 비활성화
             connectButton.setDisable(true);
 
-            // 2. FastAPI /connect 엔드포인트에 데이터 전송 (백그라운드 스레드 사용)
             new Thread(() -> {
                 try {
-                    String serverUrl = "http://localhost:5000/connect"; // FastAPI 서버 주소
+                    String serverUrl = Config.SERVER_CONNECT_ENDPOINT;
 
-                    // JSON 페이로드 생성
                     Map<String, Object> requestData = new HashMap<>();
                     requestData.put("ip_address", ip);
                     requestData.put("setup_port", setupPort);
@@ -212,18 +205,14 @@ public class AppController implements Initializable {
                             .POST(HttpRequest.BodyPublishers.ofString(jsonPayload, StandardCharsets.UTF_8))
                             .build();
 
-                    // HTTP 요청 전송 및 응답 수신
                     HttpResponse<String> response = httpClient.send(request,
                             HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
-                    // 응답 처리 (JavaFX 스레드에서)
                     Platform.runLater(() -> {
                         connectButton.setDisable(false); // 버튼 다시 활성화
                         if (response.statusCode() == 200) {
-                            // 성공 시 사용자 알림 (응답 내용 파싱하여 더 자세히 표시 가능)
                             showAlert(AlertType.INFORMATION, "연결 상태", "연결 요청 성공.\n서버 응답: " + response.body());
                         } else {
-                            // 실패 시 에러 알림
                             showAlert(AlertType.ERROR, "연결 오류",
                                     "서버 에러: " + response.statusCode() + "\n" + parseErrorFromJson(response.body()));
                         }
@@ -251,30 +240,24 @@ public class AppController implements Initializable {
         }
     }
 
-    // --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    // 'Disconnect' 버튼 클릭 처리 (신규 구현)
-    // --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     @FXML
     private void handleDisconnect() {
         System.out.println("Disconnect button clicked. Sending disconnect request.");
 
-        // 버튼 임시 비활성화
         disconnectButton.setDisable(true);
 
-        // FastAPI /disconnect 엔드포인트에 요청 전송 (백그라운드 스레드 사용)
         new Thread(() -> {
             try {
-                String serverUrl = "http://localhost:5000/disconnect"; // FastAPI 서버 주소
+                String serverUrl = Config.SERVER_DISCONNECT_ENDPOINT;
 
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(serverUrl))
-                        .POST(HttpRequest.BodyPublishers.noBody()) // 연결 해제에는 데이터 불필요
+                        .POST(HttpRequest.BodyPublishers.noBody())
                         .build();
 
                 HttpResponse<String> response = httpClient.send(request,
                         HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
-                // 응답 처리 (JavaFX 스레드에서)
                 Platform.runLater(() -> {
                     disconnectButton.setDisable(false); // 버튼 다시 활성화
                     if (response.statusCode() == 200) {
@@ -458,16 +441,13 @@ public class AppController implements Initializable {
     }
 
     private void setupTableView() {
-        // 컬럼과 TestCase 필드 연결
         colNum.setCellValueFactory(new PropertyValueFactory<>("num"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colContent.setCellValueFactory(new PropertyValueFactory<>("content"));
         colResult.setCellValueFactory(new PropertyValueFactory<>("result"));
 
-        // TableView에 데이터 리스트 설정
         tableView.setItems(testCaseList);
 
-        // TableView의 각 행(Row)에 더블클릭 이벤트 핸들러 추가
         tableView.setRowFactory(tv -> {
             TableRow<TestCase> row = new TableRow<>();
             row.setOnMouseClicked(event -> {

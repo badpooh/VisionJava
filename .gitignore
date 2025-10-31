@@ -9,3 +9,4 @@ python_scripts
 target
 gradle.properties
 launch.json
+__pycache__\
