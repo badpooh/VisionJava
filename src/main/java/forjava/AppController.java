@@ -72,10 +72,8 @@ public class AppController implements Initializable {
     private Button serverStartButton;
 
     private final DatabaseManager dbManager = new DatabaseManager();
-    // private static final String KEY_TCP_IP = "LAST_TCP_IP";
-    // private static final String KEY_SETUP_PORT = "LAST_SETUP_PORT";
-    // private static final String KEY_TOUCH_PORT = "LAST_TOUCH_PORT";
     private ObservableList<TestCase> testCaseList = FXCollections.observableArrayList();
+    private final FastApiClient apiClient;
 
     private Process pythonServerProcess;
     private Task<Void> testRunnerTask;
@@ -90,6 +88,10 @@ public class AppController implements Initializable {
         loadLastSettings();
         setupTableView();
         stopButton.setDisable(true);
+    }
+
+    public AppController() {
+        this.apiClient = new FastApiClient();
     }
 
     // --- (기존의 다른 메소드들은 여기에 그대로 유지됩니다) ---
@@ -483,63 +485,10 @@ public class AppController implements Initializable {
         }
     }
 
-    private String sendOcrRequest(TestCase testCase) throws IOException, InterruptedException {
-        String serverUrl = "http://localhost:5000/ocr";
-
-        // --- 중요: 실제 데이터 구성 ---
-        // TestCase 객체에서 이미지 경로와 ROI 정보를 가져와야 합니다.
-        // 현재 TestCase 클래스에는 이 정보가 없으므로, 임시 데이터를 사용합니다.
-        // TODO: TestCase 클래스에 imagePath, roiKeys 필드를 추가하고 값을 설정해야 함.
-        String imagePath = "D:/path/to/your/image.png"; // <<<< 실제 이미지 경로로 수정 필요
-        List<String> roiKeys = List.of("key1", "key2"); // <<<< 실제 ROI 키로 수정 필요
-        // --- -----------------------
-
-        Map<String, Object> requestData = new HashMap<>();
-        requestData.put("image_path", imagePath);
-        requestData.put("roi_keys", roiKeys);
-
-        String jsonPayload = objectMapper.writeValueAsString(requestData);
-        System.out.println("[HTTP Request] Sending JSON: " + jsonPayload); // 전송 데이터 로깅
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(serverUrl))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonPayload, StandardCharsets.UTF_8))
-                .build();
-
-        // 타임아웃 설정 추가 (예: 30초)
-        // request =
-        // HttpRequest.newBuilder(request.uri()).headers(request.headers()).POST(request.body()).timeout(Duration.ofSeconds(30)).build();
-
-        try {
-            HttpResponse<String> response = httpClient.send(request,
-                    HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            System.out.println("[HTTP Response] Status Code: " + response.statusCode()); // 응답 코드 로깅
-            System.out.println("[HTTP Response] Body: " + response.body()); // 응답 본문 로깅
-
-            if (response.statusCode() == 200) {
-                return parseResultFromJson(response.body());
-            } else {
-                return "Server Error: " + response.statusCode() + " - " + parseErrorFromJson(response.body());
-            }
-        } catch (IOException e) {
-            System.err.println("[HTTP Error] Failed to connect or send request to Python server: " + e.getMessage());
-            throw e; // 에러를 다시 던져서 Task 실패 처리
-        } catch (InterruptedException e) {
-            System.err.println("[HTTP Error] Request interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt(); // 인터럽트 상태 복원
-            throw e;
-        }
-    }
-
-    /**
-     * UI 스레드를 차단하지 않고 백그라운드에서 테스트를 실행하는 Task 클래스.
-     */
     private class TestRunnerTask extends Task<Void> {
         private final ObservableList<TestCase> testsToRun;
 
         public TestRunnerTask(ObservableList<TestCase> testsToRun) {
-            // 원본 리스트를 수정하지 않도록 복사본을 사용
             this.testsToRun = FXCollections.observableArrayList(testsToRun);
         }
 
@@ -547,44 +496,53 @@ public class AppController implements Initializable {
         protected Void call() throws Exception {
             for (int i = 0; i < testsToRun.size(); i++) {
                 if (isCancelled()) {
-                    updateMessage("Cancelled by user."); // Task 상태 메시지 업데이트
+                    updateMessage("Cancelled by user.");
                     System.out.println("Test execution cancelled by user.");
                     break;
                 }
 
                 TestCase currentTest = testsToRun.get(i);
-                updateMessage("Processing test #" + currentTest.getNum()); // 진행 상태 메시지 업데이트
+                String content = currentTest.getContent(); // "Initialize", "Balance" 등
+                updateMessage("Processing: " + content);
 
-                // UI 업데이트는 Platform.runLater 사용
                 Platform.runLater(() -> currentTest.setResult("Sending..."));
 
                 try {
-                    // FastAPI 서버에 HTTP 요청
-                    String jsonResponse = sendOcrRequest(currentTest);
+                    String jsonResponse;
 
-                    final String finalResult = jsonResponse; // 일단 전체 응답 사용
+                    if ("Initialize".equals(content)) {
+                        System.out.println("Sending /Initialize request...");
+                        jsonResponse = apiClient.sendInitializationRequest();
+                    } else if ("Test Mode Balance".equals(content)) {
+                        System.out.println("Sending /test_mode_balance request for Balance...");
+                        jsonResponse = apiClient.sendTestModeBalance();
+                    } else if ("Unbalance".equals(content)) {
+                        System.out.println("Sending /ocr request for Unbalance...");
+                        jsonResponse = apiClient.sendTestModeBalance();
+                    } else {
+                        // "Options not set" 등 기타 경우
+                        System.out.println("Skipping test (content: " + content + ")");
+                        jsonResponse = "{\"status\":\"skipped\", \"results\":\"N/A\"}";
+                    }
+                    // --- ---------------------------------------
+
+                    final String finalResult = parseResultFromJson(jsonResponse); // 응답 파싱
                     Platform.runLater(() -> currentTest.setResult(finalResult));
 
-                    // 진행률 업데이트 (선택 사항)
                     updateProgress(i + 1, testsToRun.size());
 
                 } catch (IOException | InterruptedException e) {
-                    // HttpClient에서 발생한 예외 처리
-                    if (isCancelled()) { // 중지 요청 중 발생한 예외는 무시
-                        System.out.println("Task cancelled during HTTP request.");
+                    if (isCancelled()) {
+                        System.out.println("Task cancelled during request.");
                         break;
                     }
                     System.err.println("Error processing test #" + currentTest.getNum() + ": " + e.getMessage());
-                    // 에러 발생 시 UI 업데이트
                     final String errorMessage = "Request Error: " + e.getClass().getSimpleName();
                     Platform.runLater(() -> currentTest.setResult(errorMessage));
-                    // 실패로 간주하고 Task 중단 (선택 사항)
-                    // updateMessage("Task failed due to network error.");
-                    // throw e;
                 }
             }
             if (!isCancelled()) {
-                updateMessage("All tests completed."); // 최종 상태 메시지
+                updateMessage("All tests completed.");
             }
             return null;
         }

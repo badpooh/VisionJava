@@ -24,4 +24,10 @@ public final class Config {
 	public static final String SERVER_DISCONNECT_ENDPOINT = SERVER_BASE_URL + "/disconnect";
 	public static final String SERVER_OCR_ENDPOINT = SERVER_BASE_URL + "/ocr";
 
+	// --- TestCase Content ---
+	public static final String INITIALIZE_ENDPOINT = SERVER_BASE_URL + "/Initialize";
+	public static final String TEST_MODE_BALANCE_ENDPOINT = SERVER_BASE_URL + "/test_mode_balance";
+
+	public static final String OCR_ENDPOINT = SERVER_BASE_URL + "/ocr";
+
 }

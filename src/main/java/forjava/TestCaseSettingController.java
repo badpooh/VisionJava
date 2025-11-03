@@ -9,15 +9,20 @@ import javafx.stage.Stage;
 
 public class TestCaseSettingController {
 
-    @FXML private CheckBox initializeCheckbox;
-    @FXML private CheckBox balanceCheckbox;
-    @FXML private CheckBox unbalanceCheckbox;
-    @FXML private Button applyButton;
-    @FXML private Button cancelButton;
+    @FXML
+    private CheckBox initializeCheckbox;
+    @FXML
+    private CheckBox balanceCheckbox;
+    @FXML
+    private CheckBox unbalanceCheckbox;
+    @FXML
+    private Button applyButton;
+    @FXML
+    private Button cancelButton;
 
     private TestCase currentTestCase;
 
-    public void initData(TestCase testCase){
+    public void initData(TestCase testCase) {
         this.currentTestCase = testCase;
         initializeCheckbox.setSelected(testCase.isInitialize());
         balanceCheckbox.setSelected(testCase.isBalance());
@@ -31,7 +36,7 @@ public class TestCaseSettingController {
             currentTestCase.setInitialize(initializeCheckbox.isSelected());
             currentTestCase.setBalance(balanceCheckbox.isSelected());
             currentTestCase.setUnbalance(unbalanceCheckbox.isSelected());
-            
+
             // 변경된 설정을 content 열에 시각적으로 표시 (예시)
             updateTestCaseContent();
         }
@@ -52,7 +57,7 @@ public class TestCaseSettingController {
             selectedOptions.add("Initialize");
         }
         if (currentTestCase.isBalance()) {
-            selectedOptions.add("Balance");
+            selectedOptions.add("Test Mode Balance");
         }
         if (currentTestCase.isUnbalance()) {
             selectedOptions.add("Unbalance");
