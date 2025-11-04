@@ -43,6 +43,11 @@ public class FastApiClient {
 		return sendRequest(request);
 	}
 
+	public String sendStopTestRequest() throws IOException, InterruptedException {
+		HttpRequest request = buildPostRequest(Config.STOP_TEST, HttpRequest.BodyPublishers.noBody());
+		return sendRequest(request); // 공통 전송 로직 사용
+	}
+
 	public String sendInitializationRequest() throws IOException, InterruptedException {
 		Map<String, Object> requestData = new HashMap<>();
 		requestData.put("message", "Java client requested initialization");

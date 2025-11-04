@@ -342,7 +342,11 @@ public class AppController implements Initializable {
                 String appModule = "main:app";
 
                 ProcessBuilder pb = new ProcessBuilder(
-                        pythonExe, "-m", "uvicorn", appModule,
+                        pythonExe,
+                        "-X", "uft8",
+                        "-u",
+                        "-m", "uvicorn",
+                        appModule,
                         "--host", "0.0.0.0",
                         "--port", "5000",
                         "--log-level", "info");
@@ -394,10 +398,11 @@ public class AppController implements Initializable {
         startButton.setDisable(true);
         stopButton.setDisable(false);
 
-        testRunnerTask = new TestRunnerTask(FXCollections.observableArrayList(testCaseList)); // 리스트 복사본 전달
+        testRunnerTask = new TestRunnerTask(FXCollections.observableArrayList(testCaseList));
 
         testRunnerTask.setOnSucceeded(e -> handleTaskCompletion("All tests finished successfully."));
-        testRunnerTask.setOnFailed(e -> handleTaskCompletion("The test task failed.", testRunnerTask.getException()));
+        testRunnerTask.setOnFailed(e -> handleTaskCompletion("The test task failed.",
+                testRunnerTask.getException()));
         testRunnerTask.setOnCancelled(e -> handleTaskCompletion("The test task was cancelled."));
 
         new Thread(testRunnerTask).start();
@@ -410,7 +415,18 @@ public class AppController implements Initializable {
     private void handleStop() {
         System.out.println("STOP button clicked");
         if (testRunnerTask != null && testRunnerTask.isRunning()) {
-            testRunnerTask.cancel(true); // Task에 취소 요청
+            testRunnerTask.cancel(true);
+
+            new Thread(() -> {
+                try {
+                    System.out.println("Sending /stop test request to Python server...");
+                    String response = apiClient.sendStopTestRequest();
+                    System.out.println("Stop request response: " + response);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+
         } else {
             System.out.println("No test task is currently running.");
         }
@@ -606,4 +622,5 @@ public class AppController implements Initializable {
             System.out.println("Python server process destroyed.");
         }
     }
+
 }

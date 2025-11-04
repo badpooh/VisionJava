@@ -28,6 +28,8 @@ public final class Config {
 	public static final String INITIALIZE_ENDPOINT = SERVER_BASE_URL + "/Initialize";
 	public static final String TEST_MODE_BALANCE_ENDPOINT = SERVER_BASE_URL + "/test_mode_balance";
 
+	public static final String STOP_TEST = SERVER_BASE_URL + "/stop_test";
+
 	public static final String OCR_ENDPOINT = SERVER_BASE_URL + "/ocr";
 
 }
