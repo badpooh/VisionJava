@@ -13,9 +13,6 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * Python FastAPI 서버와의 모든 HTTP 통신을 담당하는 클라이언트 클래스
- */
 public class FastApiClient {
 
 	private static final String JSON_KEY_IMAGE_PATH = "image_path";

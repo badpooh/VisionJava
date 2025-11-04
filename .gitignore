@@ -1,5 +1,6 @@
 # Ignore Gradle project-specific cache directory
 .gradle
+.vscode\
 
 # Ignore Gradle build output directory
 build
@@ -8,5 +9,4 @@ python_env
 python_scripts
 target
 gradle.properties
-launch.json
 __pycache__\

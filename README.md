@@ -22,3 +22,9 @@ jpackage --name "vojava" --type app-image --dest target/app --input target --mai
 
 
 python 코드는 경로에 맞춰 직접 복사 붙이기 요구
+
+
+
+
+visiontest) c:\PNT\AutoProgram\VisionJava> c: && cd c:\PNT\AutoProgram\VisionJava && cmd /C "C:\java\jdk-25\bin\java.exe -agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=localhost:49880 @C:\Users\jscho\AppData\Local\Temp\cp_e80b516amg8l3h8xumbhmqv9x.argfile forjava.App "
+Database and table have been initialized.

@@ -514,10 +514,7 @@ public class AppController implements Initializable {
                         System.out.println("Sending /Initialize request...");
                         jsonResponse = apiClient.sendInitializationRequest();
                     } else if ("Test Mode Balance".equals(content)) {
-                        System.out.println("Sending /test_mode_balance request for Balance...");
-                        jsonResponse = apiClient.sendTestModeBalance();
-                    } else if ("Unbalance".equals(content)) {
-                        System.out.println("Sending /ocr request for Unbalance...");
+                        System.out.println("Sending /test_mode_balance request for Balance setting...");
                         jsonResponse = apiClient.sendTestModeBalance();
                     } else {
                         // "Options not set" 등 기타 경우
