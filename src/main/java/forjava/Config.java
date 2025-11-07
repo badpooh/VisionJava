@@ -22,6 +22,7 @@ public final class Config {
 	public static final String SERVER_BASE_URL = "http://localhost:5000";
 	public static final String SERVER_CONNECT_ENDPOINT = SERVER_BASE_URL + "/connect";
 	public static final String SERVER_DISCONNECT_ENDPOINT = SERVER_BASE_URL + "/disconnect";
+	public static final String SERVER_HEALTH_CHECK = SERVER_BASE_URL + "/health";
 	public static final String SERVER_OCR_ENDPOINT = SERVER_BASE_URL + "/ocr";
 
 	// --- TestCase Content ---

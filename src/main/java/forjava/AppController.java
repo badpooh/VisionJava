@@ -94,7 +94,6 @@ public class AppController implements Initializable {
         this.apiClient = new FastApiClient();
     }
 
-    // --- (기존의 다른 메소드들은 여기에 그대로 유지됩니다) ---
     private void loadLastSettings() {
         String lastIp = dbManager.loadSetting(Config.KEY_TCP_IP);
         if (lastIp != null) {
@@ -211,7 +210,7 @@ public class AppController implements Initializable {
                             HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
                     Platform.runLater(() -> {
-                        connectButton.setDisable(false); // 버튼 다시 활성화
+                        connectButton.setDisable(false);
                         if (response.statusCode() == 200) {
                             showAlert(AlertType.INFORMATION, "연결 상태", "연결 요청 성공.\n서버 응답: " + response.body());
                         } else {
@@ -234,7 +233,7 @@ public class AppController implements Initializable {
                         showAlert(AlertType.ERROR, "요청 오류", "연결 요청 실패: " + e.getMessage());
                     });
                 }
-            }).start(); // 백그라운드 스레드 시작
+            }).start();
 
         } catch (NumberFormatException e) {
             // 포트 번호 변환 실패 시
@@ -261,7 +260,7 @@ public class AppController implements Initializable {
                         HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
                 Platform.runLater(() -> {
-                    disconnectButton.setDisable(false); // 버튼 다시 활성화
+                    disconnectButton.setDisable(false);
                     if (response.statusCode() == 200) {
                         showAlert(AlertType.INFORMATION, "연결 해제 상태", "연결 해제 요청 성공.\n서버 응답: " + response.body());
                     } else {
@@ -281,7 +280,7 @@ public class AppController implements Initializable {
                     showAlert(AlertType.ERROR, "요청 오류", "연결 해제 요청 실패: " + e.getMessage());
                 });
             }
-        }).start(); // 백그라운드 스레드 시작
+        }).start();
     }
 
     @FXML
@@ -337,7 +336,7 @@ public class AppController implements Initializable {
 
         new Thread(() -> {
             try {
-                File appRoot = new File(System.getProperty("user.dir")); // 프로젝트 루트
+                File appRoot = new File(System.getProperty("user.dir"));
                 String pythonExe = new File(appRoot, "python_env/python.exe").getAbsolutePath();
                 String appModule = "main:app";
 
@@ -355,11 +354,10 @@ public class AppController implements Initializable {
 
                 pythonServerProcess = pb.start();
 
-                // 반드시 출력 고블러 붙이기
                 gobble(pythonServerProcess.getInputStream(), "[SERVER] ");
 
-                // 헬스체크 대기 (최대 20초)
-                boolean ok = waitForHealth("http://127.0.0.1:5000/health", 20);
+                // 헬스체크 대기 (최대 60초)
+                boolean ok = waitForHealth(Config.SERVER_HEALTH_CHECK, 60);
                 serverReady = ok;
 
                 Platform.runLater(() -> {
